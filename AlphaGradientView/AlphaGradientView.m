@@ -16,13 +16,12 @@
 }
 
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
-    if (self)
-    {
+    
+    if (self) {
         _alpha = 1.0;
-        self.userInteractionEnabled = false;
+        self.userInteractionEnabled = YES;
         self.backgroundColor = [UIColor clearColor];
         self.color = [UIColor blackColor];
     }
@@ -30,59 +29,50 @@
     return self;
 }
 
-
--(void) setAlpha:(CGFloat)alpha
-{
+- (void)setAlpha:(CGFloat)alpha {
     _alpha = alpha;
-    [self setNeedsDisplay];    
+    [self setNeedsDisplay];
 }
 
--(void) setColor:(UIColor *)value
-{
+- (void)setColor:(UIColor *)value {
     _color = value;
     [self setNeedsDisplay];
 }
 
--(void) setDirection:(GradientDirection)value
-{
+- (void)setDirection:(GradientDirection)value {
     _direction = value;
     [self setNeedsDisplay];
 }
 
--(void) calculateStartAndEndPoints
-{
-    switch (self.direction)
-    {
+- (void)calculateStartAndEndPoints {
+    switch (self.direction) {
         case GRADIENT_UP:
-            startPoint  = CGPointMake( 0, self.frame.size.height);
-            endPoint    = CGPointMake( 0, 0);
+            startPoint = CGPointMake(0, self.frame.size.height);
+            endPoint = CGPointMake(0, 0);
             break;
             
         case GRADIENT_DOWN:
-            startPoint  = CGPointMake( 0, 0);
-            endPoint    = CGPointMake( 0, self.frame.size.height);
+            startPoint = CGPointMake(0, 0);
+            endPoint = CGPointMake(0, self.frame.size.height);
             break;
             
         case GRADIENT_LEFT:
-            startPoint  = CGPointMake( self.frame.size.width, 0);
-            endPoint    = CGPointMake( 0, 0);
+            startPoint = CGPointMake(self.frame.size.width, 0);
+            endPoint = CGPointMake(0, 0);
             break;
             
         case GRADIENT_RIGHT:
-            startPoint  = CGPointMake( 0, 0);
-            endPoint    = CGPointMake( self.frame.size.width, 0);
+            startPoint = CGPointMake(0, 0);
+            endPoint = CGPointMake(self.frame.size.width, 0);
             break;
     }
-   
 }
 
-- (void)drawRect:(CGRect)rect
-{
+- (void)drawRect:(CGRect)rect {
     [self drawGradient:rect];
 }
 
--(void) drawGradient:(CGRect)rect
-{
+- (void)drawGradient:(CGRect)rect {
     CGFloat maskColors[] =
     {
         0.0f, 0.0f, 0.0f, 1.0f,
@@ -97,14 +87,14 @@
     UIGraphicsBeginImageContextWithOptions(rect.size, NO, 1.0);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetFillColorWithColor(context, [self.color colorWithAlphaComponent:_alpha].CGColor);
-    CGContextFillRect( UIGraphicsGetCurrentContext(), frame);
+    CGContextFillRect(UIGraphicsGetCurrentContext(), frame);
     CGImageRef colorRef = UIGraphicsGetImageFromCurrentImageContext().CGImage;
     
     // Create an image of a gradient from black to white
     CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
     CGGradientRef gradientRef = CGGradientCreateWithColorComponents(rgb, maskColors, NULL, sizeof(maskColors) / (sizeof(maskColors[0]) * 4));
     CGColorSpaceRelease(rgb);
-    CGContextDrawLinearGradient( context, gradientRef, startPoint, endPoint, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+    CGContextDrawLinearGradient(context, gradientRef, startPoint, endPoint, kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
     CGImageRef maskRef = UIGraphicsGetImageFromCurrentImageContext().CGImage;
     UIGraphicsEndImageContext();
     
